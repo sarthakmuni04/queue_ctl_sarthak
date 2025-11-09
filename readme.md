@@ -185,16 +185,6 @@ delay = base * (2 ^ (attempt - 1))
 
 ---
 
-## ⚖️ Assumptions & Trade-offs
-
-- Single SQLite DB simplifies persistence and concurrency.
-- Workers share the same DB; no external message broker needed.
-- Jobs are executed synchronously (one job per worker at a time).
-- Ideal for local development, testing, and demo environments.
-- Backoff logic and retries are handled inside worker loop.
-
----
-
 ## 🧪 Testing Instructions
 
 ### 🔹 Quick Functional Test
@@ -293,16 +283,6 @@ queuectl/
 ├── .gitignore
 └── README.md
 ```
-
----
-
-## 🧩 Future Enhancements
-
-- [ ] Add priority queue support
-- [ ] Add Web dashboard for job monitoring
-- [ ] Add metrics export (Prometheus / Grafana)
-- [ ] Implement distributed workers via Redis / PostgreSQL
-- [ ] Add job cancellation and pause/resume features
 
 ---
 
