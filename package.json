@@ -1,0 +1,31 @@
+{
+  "name": "queuectl",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/cli.js",
+    "worker": "node ./src/cli.js worker start",
+    "enqueue": "node ./src/cli.js enqueue",
+    "list": "node ./src/cli.js list",
+    "status": "node ./src/cli.js status",
+    "dlq": "node ./src/cli.js dlq",
+    "stop": "node ./src/cli.js worker stop",
+    "config": "node ./src/cli.js config",
+    "reset": "node ./src/cli.js reset"
+  },
+  "type": "module",
+  "bin": {
+    "queuectl": "./src/cli.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "better-sqlite3": "^12.4.1",
+    "commander": "^14.0.2",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "pidusage": "^4.0.1"
+  }
+}

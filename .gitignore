@@ -1,0 +1,62 @@
+# ============================================================
+#  Node.js / QueueCTL CLI Project Git Ignore File
+# ============================================================
+
+# --- Node dependencies ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Local environment / secrets ---
+.env
+.env.local
+.env.*.local
+
+# --- OS-specific clutter ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+logs/
+*.log
+*.log.*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# --- Build and runtime outputs ---
+dist/
+build/
+coverage/
+.tmp/
+temp/
+
+# --- SQLite Database & Queue Data ---
+.queuectl/
+*.db
+*.db-wal
+*.db-shm
+
+# --- Editor / IDE config ---
+.vscode/
+.idea/
+*.swp
+
+# --- System backups / misc ---
+*.bak
+*.old
+*.orig
+
+# --- TypeScript cache (if any) ---
+*.tsbuildinfo
+
+# --- Lockfiles (optional) ---
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================================
+# End of file
+# ============================================================
