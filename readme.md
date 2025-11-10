@@ -1,3 +1,6 @@
+# Demo-Video
+https://drive.google.com/file/d/1HQX38uttvq2nbty4zl9C_JYzpecc5LDI/view?usp=sharing
+
 # ⚙️ QueueCTL — Minimal Job Queue CLI (Node.js + SQLite)
 
 **QueueCTL** is a lightweight, persistent job queue built with **Node.js** and **SQLite**.  
@@ -31,7 +34,7 @@ It provides a simple yet powerful CLI for managing background jobs with support 
 ### 1️⃣ Clone and install
 
 ```bash
-git clone https://github.com/sarthakmuni04/queuectl.git
+git clone https://github.com/sarthakmuni04/queue_ctl_sarthak.git 
 cd queuectl
 npm install
 ```
@@ -62,13 +65,13 @@ mkdir -p $QUEUECTL_DATA_DIR
 
 ```bash
 npm run enqueue -- '{\"id\":\"job1\",\"command\":\"echo Hello from QueueCTL\"}'
-npm run enqueue -- '{\"id\":\"job6\",\"command\":\"exit 1"}'   ->failed job
+npm run enqueue -- '{\"id\":\"job6\",\"command\":\"exit 1\"}'    ->failed job
 ```
 
 ### 👷 Start Workers
 
 ```bash
-npm run worker -- --count 2
+npm run worker --count=2 
 ```
 
 Starts 2 detached worker processes to handle queued jobs.
@@ -77,11 +80,6 @@ Starts 2 detached worker processes to handle queued jobs.
 
 ```bash
 npm run list                   # list all states
-npm run list -- --state pending
-npm run list -- --state processing
-npm run list -- --state completed
-npm run list -- --state failed
-npm run list -- --state dead
 ```
 
 ### 📊 View System Status
@@ -96,12 +94,12 @@ Displays summary of jobs and active worker PIDs with CPU/memory usage.
 
 ```bash
 # Set configuration values
-npm run config -- set max-retries 3
+npm run config -- set max-retries 3  
 npm run config -- set backoff exponential
 npm run config -- set backoff-base 1000
 
 # View current configuration
-npm run config -- get
+npm run config -- get 
 ```
 
 ### 💀 Dead Letter Queue (DLQ)
@@ -184,8 +182,8 @@ delay = base * (2 ^ (attempt - 1))
 npm run config -- set max-retries 3
 npm run config -- set backoff exponential
 npm run config -- set backoff-base 1000
-npm run worker -- --count 1
-npm run enqueue -- "{"id":"failjob1","command":"exit 1"}"
+npm run worker --count=2
+npm run enqueue -- '{\"id\":\"job1\",\"command\":\"echo Hello from QueueCTL\"}'
 ```
 
 Now run:
