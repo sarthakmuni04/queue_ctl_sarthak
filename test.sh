@@ -11,7 +11,7 @@ npm run enqueue -- '{"id":"failjob1","command":"exit 1","max_retries":"3"}'
 npm run status
 
 # dlq commmands
-npm run dlq-list
+npm run dlq list
 npm run dlq -- retry <job-id>
 
 #to stop workers
@@ -20,5 +20,5 @@ npm run stop
 # config commands
 npm run config -- get
 npm run config -- set max-retries 3
-npm run config -- set backoff-base 1000 (to set back-off base)
+
 

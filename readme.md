@@ -31,7 +31,7 @@ It provides a simple yet powerful CLI for managing background jobs with support 
 ### 1️⃣ Clone and install
 
 ```bash
-git clone https://github.com/<your-username>/queuectl.git
+git clone https://github.com/sarthakmuni04/queuectl.git
 cd queuectl
 npm install
 ```
@@ -61,7 +61,7 @@ mkdir -p $QUEUECTL_DATA_DIR
 ### 🪄 Enqueue a Job
 
 ```bash
-npm run enqueue -- "{"id":"job1","command":"echo Hello from QueueCTL"}"
+npm run enqueue -- '{"id":"job1","command":"echo Hello from QueueCTL"}'
 ```
 
 ### 👷 Start Workers
@@ -125,12 +125,6 @@ npm run stop
 ```
 
 Stops all running workers gracefully.
-
-Stop a specific worker:
-
-```bash
-node ./src/cli.js worker stop --pid <PID>
-```
 
 ---
 
