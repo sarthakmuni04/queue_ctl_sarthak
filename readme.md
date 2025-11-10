@@ -201,12 +201,11 @@ You’ll see retries with exponential backoff; after 3 failed attempts, the job 
 
 It performs:
 
-1. DB reset
-2. Worker startup
-3. Enqueue success + failure jobs
-4. Check job transitions
-5. Retry DLQ
-6. Stop workers
+1. Worker startup
+2. Enqueue success + failure jobs
+3. Check job transitions
+4. Retry DLQ
+5. Stop workers
 
 ---
 
@@ -221,7 +220,7 @@ pending     : 1
 processing  : 0
 completed   : 4
 failed      : 0
-dead        : 1
+dead        : 0
 ─────────────────────────────
 total       : 6
 
