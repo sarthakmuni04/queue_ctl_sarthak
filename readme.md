@@ -114,10 +114,6 @@ npm run dlq
 # Retry a DLQ job
 npm run dlq -- retry <job-id>
 
-# Clear DLQ
-npm run dlq -- clear
-```
-
 ### 🛑 Stop Workers
 
 ```bash
@@ -184,7 +180,6 @@ delay = base * (2 ^ (attempt - 1))
 ### 🔹 Quick Functional Test
 
 ```bash
-npm run reset
 npm run config -- set max-retries 3
 npm run config -- set backoff exponential
 npm run config -- set backoff-base 1000
@@ -202,14 +197,6 @@ npm run dlq
 You’ll see retries with exponential backoff; after 3 failed attempts, the job moves to DLQ.
 
 ---
-
-### 🔹 Integration Test Script
-
-Run all tests end-to-end:
-
-```bash
-./test_all.sh
-```
 
 It performs:
 
@@ -256,7 +243,6 @@ PID    CPU    Memory
 | `npm run status`              | Show status summary       |
 | `npm run config -- get/set`   | Manage configuration      |
 | `npm run dlq`                 | Manage DLQ                |
-| `npm run reset`               | Stop workers and clear DB |
 | `npm run stop`                | Stop all running workers  |
 
 ---
@@ -273,7 +259,6 @@ queuectl/
 │   ├── config.js       # Config storage
 │   └── util.js         # Helpers
 ├── package.json
-├── test_all.sh
 ├── .gitignore
 └── README.md
 ```

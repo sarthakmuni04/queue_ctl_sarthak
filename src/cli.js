@@ -30,54 +30,61 @@ program
 
 program
   .command("enqueue")
-  .argument("<json>", "job as JSON {id, command, max_retries?, run_at?}")
-  .action((json) => {
-    const obj = jsonTryParse(json);
+  .argument("[payload...]", "job as JSON {id, command, max_retries?, run_at?}")
+  .option("-f, --file <path>", "read job JSON from file")
+  .option("--id <id>", "job id")
+  .option("--command <cmd...>", "job command (supports spaces)")
+  .action(async (payloadParts, opts) => {
+    let text = null;
+
+    // 1) file input
+    if (opts.file) {
+      text = await fs.readFile(opts.file, "utf8");
+    }
+    // 2) explicit flags
+    else if (opts.id && opts.command) {
+      const cmd = Array.isArray(opts.command)
+        ? opts.command.join(" ")
+        : opts.command;
+      text = JSON.stringify({ id: opts.id, command: cmd });
+    }
+    // 3) rest args (re-join the line PowerShell split)
+    else if (payloadParts?.length) {
+      text = payloadParts.join(" ");
+    }
+    // 4) stdin (pipe JSON)
+    else if (!process.stdin.isTTY) {
+      text = await new Promise((resolve) => {
+        let s = "";
+        process.stdin.setEncoding("utf8");
+        process.stdin.on("data", (d) => (s += d));
+        process.stdin.on("end", () => resolve(s));
+      });
+    } else {
+      console.error("Provide JSON, --file, or --id/--command.");
+      process.exit(1);
+    }
+
+    text = text.trim();
+    if (
+      (text.startsWith('"') && text.endsWith('"')) ||
+      (text.startsWith("'") && text.endsWith("'"))
+    ) {
+      text = text.slice(1, -1);
+    }
+
+    const obj = jsonTryParse(text);
     if (!obj || !obj.id || !obj.command) {
       console.error("Invalid job JSON. Requires id and command.");
       process.exit(1);
     }
+
     try {
       const j = enqueue(obj);
       console.log("enqueued", j);
     } catch (err) {
       console.error(err?.message || String(err));
       process.exit(1);
-    }
-  });
-
-program
-  .command("reset")
-  .description("Stop all workers and delete the queue database")
-  .action(() => {
-    try {
-      // 1️⃣ Stop any running workers
-      const pidFile = join(process.cwd(), ".queuectl", "workers.pid");
-      if (existsSync(pidFile)) {
-        const { pids } = JSON.parse(readFileSync(pidFile, "utf8"));
-        for (const pid of pids) {
-          try {
-            process.kill(pid, "SIGTERM");
-          } catch {
-            // ignore if already dead
-          }
-        }
-        rmSync(pidFile, { force: true });
-        console.log("🧹 Stopped running workers.");
-      }
-
-      // 2️⃣ Wait a moment to ensure file locks released
-      setTimeout(() => {
-        // 3️⃣ Delete DB directory
-        if (fs.existsSync(DATA_DIR)) {
-          fs.rmSync(DATA_DIR, { recursive: true, force: true });
-          console.log("✅ Queue database reset successfully!");
-        } else {
-          console.log("No existing database found.");
-        }
-      }, 300); // wait 300ms before deleting
-    } catch (err) {
-      console.error("❌ Failed to reset DB:", err.message);
     }
   });
 
