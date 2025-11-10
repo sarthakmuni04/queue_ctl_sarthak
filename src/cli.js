@@ -22,6 +22,7 @@ import { DATA_DIR } from "./db.js";
 const program = new Command();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PIDFILE = process.env.QUEUECTL_PIDFILE || join(DATA_DIR, "workers.pid");
+const isAlive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
 program
   .name("queuectl")
@@ -89,50 +90,68 @@ program
   });
 
 program
- .command("worker")
+  .command("worker")
   .description("Manage workers")
   .argument("<action>", "start|stop")
-  .argument("[count]", "number of workers when starting")
-  .option("--count <n>", "number of workers")
-  .action(async (action, opts) => {
-    const sub = action;
-    if (sub === "start") {
-      const n = Number(opts.count || 1);
-      const pids = [];
+  .argument("[count]", "number of workers", "1") // allow positional `2`
+  .option("--count <n>", "number of workers", "1") // allow `--count 2`
+  .action(async (action, countArg, options) => {
+    const parseN = (v) => {
+      const n = parseInt(String(v), 10);
+      return Number.isFinite(n) && n > 0 ? n : 1;
+    };
+
+    // ALSO accept npm’s env var when using `npm run worker --count=2`
+    const n = parseN(
+      options.count ?? process.env.npm_config_count ?? countArg ?? "1"
+    );
+
+    if (action === "start") {
+      const dir = dirname(PIDFILE);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+
+      const existing = existsSync(PIDFILE)
+        ? JSON.parse(readFileSync(PIDFILE, "utf8")).pids ?? []
+        : [];
+      const alive = existing.filter(isAlive);
+
+      const started = [];
       for (let i = 0; i < n; i++) {
         const proc = fork(join(__dirname, "worker.js"), {
           detached: true,
           stdio: "ignore",
         });
         proc.unref();
-        pids.push(proc.pid);
+        started.push(proc.pid);
       }
-      const pidDir = dirname(PIDFILE);
-      if (!existsSync(pidDir)) {
-        mkdirSync(pidDir, { recursive: true });
-      }
+
+      const all = [...alive, ...started];
       writeFileSync(
         PIDFILE,
-        JSON.stringify({ startedAt: Date.now(), pids }, null, 2)
+        JSON.stringify({ startedAt: Date.now(), pids: all }, null, 2)
       );
-      console.log(`Started ${pids.length} worker(s). PID file: ${PIDFILE}`);
-    } else if (sub === "stop") {
+      console.log(
+        `✅ Started ${started.length} worker(s). Total tracked: ${all.length}. PID file: ${PIDFILE}`
+      );
+    } else if (action === "stop") {
       if (!existsSync(PIDFILE)) {
         console.log("No workers running.");
         return;
       }
-      const { pids } = JSON.parse(readFileSync(PIDFILE, "utf8"));
+      const { pids = [] } = JSON.parse(readFileSync(PIDFILE, "utf8"));
+      let stopped = 0;
       for (const pid of pids) {
         try {
           process.kill(pid, "SIGTERM");
-        } catch {
-          // ignore
-        }
+          stopped++;
+        } catch {}
       }
       rmSync(PIDFILE, { force: true });
       console.log(
-        "Sent SIGTERM to workers. They will finish current job and exit."
+        `🛑 Sent SIGTERM to ${stopped} worker(s). They will finish current jobs and exit.`
       );
+    } else {
+      console.log("Usage: queuectl worker <start|stop> [count] [--count N]");
     }
   });
 
