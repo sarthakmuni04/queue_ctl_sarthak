@@ -111,7 +111,7 @@ Jobs that fail after max retries move to the DLQ.
 npm run dlq
 
 # Retry a DLQ job
-npm run dlq -- retry <job-id>
+npm run dlq --retry <job-id>
 
 ### 🛑 Stop Workers
 
