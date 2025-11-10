@@ -89,10 +89,11 @@ program
   });
 
 program
-  .command("worker")
+ .command("worker")
   .description("Manage workers")
   .argument("<action>", "start|stop")
-  .option("--count <n>", "number of workers", "1")
+  .argument("[count]", "number of workers when starting")
+  .option("--count <n>", "number of workers")
   .action(async (action, opts) => {
     const sub = action;
     if (sub === "start") {
