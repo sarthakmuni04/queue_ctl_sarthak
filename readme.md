@@ -61,7 +61,8 @@ mkdir -p $QUEUECTL_DATA_DIR
 ### 🪄 Enqueue a Job
 
 ```bash
-npm run enqueue -- '{"id":"job1","command":"echo Hello from QueueCTL"}'
+npm run enqueue -- '{\"id\":\"job1\",\"command\":\"echo Hello from QueueCTL\"}'
+npm run enqueue -- '{\"id\":\"job6\",\"command\":\"exit 1"}'   ->failed job
 ```
 
 ### 👷 Start Workers
