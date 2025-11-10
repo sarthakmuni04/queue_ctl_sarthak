@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/cli.js",
-    "worker": "node ./src/cli.js worker start",
+    "worker": "node ./src/cli.js worker start --count %npm_config_count%",
     "enqueue": "node ./src/cli.js enqueue",
     "list": "node ./src/cli.js list",
     "status": "node ./src/cli.js status",
