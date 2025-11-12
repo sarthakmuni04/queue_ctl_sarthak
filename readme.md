@@ -220,7 +220,7 @@ completed   : 4
 failed      : 0
 dead        : 0
 ─────────────────────────────
-total       : 6
+total       : 5
 
 Active Workers:
 ─────────────────────────────
